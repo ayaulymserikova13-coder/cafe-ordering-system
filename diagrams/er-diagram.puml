@@ -1,0 +1,63 @@
+@startuml
+title Cafe Ordering System - ER Diagram
+
+entity USERS {
+  * id : BIGINT <<PK>>
+  --
+  full_name : VARCHAR
+  email : VARCHAR
+  phone : VARCHAR
+}
+
+entity CATEGORY {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR
+  description : VARCHAR
+}
+
+entity PRODUCT {
+  * id : BIGINT <<PK>>
+  --
+  name : VARCHAR
+  description : VARCHAR
+  price : DOUBLE
+  available : BOOLEAN
+  category_id : BIGINT <<FK>>
+}
+
+entity ORDERS {
+  * id : BIGINT <<PK>>
+  --
+  created_at : TIMESTAMP
+  status : VARCHAR
+  total_price : DOUBLE
+  user_id : BIGINT <<FK>>
+}
+
+entity ORDER_ITEM {
+  * id : BIGINT <<PK>>
+  --
+  quantity : INT
+  price : DOUBLE
+  order_id : BIGINT <<FK>>
+  product_id : BIGINT <<FK>>
+}
+
+entity PAYMENT {
+  * id : BIGINT <<PK>>
+  --
+  amount : DOUBLE
+  payment_method : VARCHAR
+  payment_date : TIMESTAMP
+  status : VARCHAR
+  order_id : BIGINT <<FK>>
+}
+
+USERS ||--o{ ORDERS
+CATEGORY ||--o{ PRODUCT
+ORDERS ||--o{ ORDER_ITEM
+PRODUCT ||--o{ ORDER_ITEM
+ORDERS ||--|| PAYMENT
+
+@enduml

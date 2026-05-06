@@ -1,0 +1,65 @@
+@startuml
+title Cafe Ordering System - Architecture Diagram
+
+actor Client as "Client / Postman / Browser"
+
+package "Controller Layer" {
+  [UserController]
+  [CategoryController]
+  [ProductController]
+  [OrderController]
+  [PaymentController]
+}
+
+package "Service Layer" {
+  [UserService]
+  [CategoryService]
+  [ProductService]
+  [OrderService]
+  [PaymentService]
+}
+
+package "Repository Layer" {
+  [UserRepository]
+  [CategoryRepository]
+  [ProductRepository]
+  [OrderRepository]
+  [OrderItemRepository]
+  [PaymentRepository]
+}
+
+database "H2 Database" {
+  [USERS]
+  [CATEGORY]
+  [PRODUCT]
+  [ORDERS]
+  [ORDER_ITEM]
+  [PAYMENT]
+}
+
+Client --> [UserController]
+Client --> [CategoryController]
+Client --> [ProductController]
+Client --> [OrderController]
+Client --> [PaymentController]
+
+[UserController] --> [UserService]
+[CategoryController] --> [CategoryService]
+[ProductController] --> [ProductService]
+[OrderController] --> [OrderService]
+[PaymentController] --> [PaymentService]
+
+[UserService] --> [UserRepository]
+[CategoryService] --> [CategoryRepository]
+[ProductService] --> [ProductRepository]
+[OrderService] --> [OrderRepository]
+[PaymentService] --> [PaymentRepository]
+
+[UserRepository] --> [USERS]
+[CategoryRepository] --> [CATEGORY]
+[ProductRepository] --> [PRODUCT]
+[OrderRepository] --> [ORDERS]
+[OrderItemRepository] --> [ORDER_ITEM]
+[PaymentRepository] --> [PAYMENT]
+
+@enduml

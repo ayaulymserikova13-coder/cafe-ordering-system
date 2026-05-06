@@ -1,0 +1,69 @@
+@startuml
+title Cafe Ordering System - UML Class Diagram
+
+class User {
+  - id: Long
+  - fullName: String
+  - email: String
+  - phone: String
+}
+
+class Category {
+  - id: Long
+  - name: String
+  - description: String
+}
+
+class Product {
+  - id: Long
+  - name: String
+  - description: String
+  - price: double
+  - available: boolean
+}
+
+class Order {
+  - id: Long
+  - createdAt: LocalDateTime
+  - status: OrderStatus
+  - totalPrice: double
+}
+
+class OrderItem {
+  - id: Long
+  - quantity: int
+  - price: double
+}
+
+class Payment {
+  - id: Long
+  - amount: double
+  - paymentMethod: String
+  - paymentDate: LocalDateTime
+  - status: PaymentStatus
+}
+
+enum OrderStatus {
+  CREATED
+  PREPARING
+  READY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+User "1" -- "many" Order
+Category "1" -- "many" Product
+Order "1" -- "many" OrderItem
+Product "1" -- "many" OrderItem
+Order "1" -- "1" Payment
+
+Order --> OrderStatus
+Payment --> PaymentStatus
+
+@enduml
