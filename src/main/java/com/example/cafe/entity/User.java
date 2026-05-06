@@ -32,6 +32,12 @@ public class User {
     @NotBlank
     private String phone;
 
+    @NotBlank
+    private String password;
+
+    @NotBlank
+    private String role;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();

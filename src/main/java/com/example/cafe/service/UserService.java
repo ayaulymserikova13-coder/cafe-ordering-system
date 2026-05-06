@@ -1,5 +1,6 @@
 package com.example.cafe.service;
 
+import com.example.cafe.dto.LoginRequest;
 import com.example.cafe.entity.User;
 import com.example.cafe.exception.ResourceNotFoundException;
 import com.example.cafe.repository.UserRepository;
@@ -33,6 +34,17 @@ public class UserService {
         user.setEmail(updatedUser.getEmail());
         user.setPhone(updatedUser.getPhone());
         return userRepository.save(user);
+    }
+
+    public User login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return user;
     }
 
     public void deleteUser(Long id) {

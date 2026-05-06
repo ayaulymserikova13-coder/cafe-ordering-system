@@ -2,6 +2,7 @@ package com.example.cafe.controller;
 
 import com.example.cafe.entity.User;
 import com.example.cafe.service.UserService;
+import com.example.cafe.dto.LoginRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,11 @@ public class UserController {
     @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @Valid @RequestBody User user) {
         return userService.updateUser(id, user);
+    }
+
+    @PostMapping("/login")
+    public User login(@Valid @RequestBody LoginRequest request) {
+        return userService.login(request);
     }
 
     @DeleteMapping("/{id}")
