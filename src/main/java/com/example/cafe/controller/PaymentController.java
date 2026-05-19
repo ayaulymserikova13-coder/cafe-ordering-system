@@ -2,7 +2,9 @@ package com.example.cafe.controller;
 
 import com.example.cafe.entity.Payment;
 import com.example.cafe.enums.PaymentStatus;
+import com.example.cafe.service.OrderService;
 import com.example.cafe.service.PaymentService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final OrderService orderService;
 
     @GetMapping
     public List<Payment> getAll() {
@@ -27,7 +30,14 @@ public class PaymentController {
 
     @PostMapping("/order/{orderId}")
     public Payment create(@PathVariable Long orderId,
-                          @RequestParam String method) {
+                          @RequestParam String method,
+                          HttpServletRequest request) {
+        Long currentUserId = (Long) request.getAttribute("currentUserId");
+        String currentUserRole = (String) request.getAttribute("currentUserRole");
+        Long orderUserId = orderService.getById(orderId).getUser().getId();
+        if (!"ADMIN".equalsIgnoreCase(currentUserRole) && !orderUserId.equals(currentUserId)) {
+            throw new SecurityException("You can pay only your own orders");
+        }
         return paymentService.create(orderId, method);
     }
 

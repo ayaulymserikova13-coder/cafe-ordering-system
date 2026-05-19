@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Ordering System</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="site-header">
+    <div class="brand">
+        <span class="brand-mark">CO</span>
+        <div>
+            <strong>Moon Cafe</strong>
+            <span id="headerSubtitle">Fresh coffee, desserts and quick lunch</span>
+        </div>
+    </div>
+
+    <nav id="mainNav" class="main-nav hidden">
+        <button class="nav-button active" data-view="shop">Menu</button>
+        <button class="nav-button" data-view="orders">My orders</button>
+        <button class="nav-button admin-only" data-view="admin">Admin</button>
+    </nav>
+
+    <div id="accountBox" class="account-box hidden">
+        <div>
+            <strong id="accountName"></strong>
+            <span id="accountRole"></span>
+        </div>
+        <button id="logoutBtn" class="secondary">Log out</button>
+    </div>
+</header>
+
+<main class="page">
+    <section id="alert" class="alert hidden"></section>
+
+    <section id="authView" class="auth-view">
+        <div class="auth-copy">
+            <p class="eyebrow">Online cafe</p>
+            <h1>Choose your order before you arrive.</h1>
+            <p>
+                Browse the menu, place an order, track preparation status and pay from your account.
+            </p>
+            <div class="hero-actions">
+                <button id="heroLoginBtn" type="button">Log in</button>
+                <button id="heroRegisterBtn" type="button" class="secondary">Create account</button>
+            </div>
+            <div class="demo-box">
+                <strong>Demo access</strong>
+                <span>Customer: user@cafe.test / password</span>
+                <span>Admin: admin@cafe.test / admin</span>
+            </div>
+        </div>
+
+        <div class="auth-panel">
+            <div class="auth-tabs">
+                <button id="showLoginBtn" class="active" type="button">Log in</button>
+                <button id="showRegisterBtn" type="button">Register</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <h2>Welcome back</h2>
+                <label>Email</label>
+                <input id="loginEmail" type="email" autocomplete="email" required>
+                <label>Password</label>
+                <input id="loginPassword" type="password" autocomplete="current-password" required>
+                <button type="submit">Log in</button>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <h2>Create customer account</h2>
+                <label>Full name</label>
+                <input id="fullName" type="text" autocomplete="name" required>
+                <label>Email</label>
+                <input id="email" type="email" autocomplete="email" required>
+                <label>Phone</label>
+                <input id="phone" type="text" autocomplete="tel" required>
+                <label>Password</label>
+                <input id="password" type="password" autocomplete="new-password" required>
+                <button type="submit">Create account</button>
+                <p class="form-note">After registration, use your email and password to log in.</p>
+            </form>
+        </div>
+    </section>
+
+    <section id="appView" class="app-view hidden">
+        <section id="shopView" class="view active">
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">Menu</p>
+                    <h1>Menu</h1>
+                </div>
+                <button id="refreshBtn" class="secondary">Refresh</button>
+            </div>
+
+            <div class="shop-layout">
+                <section>
+                    <div id="categoryTabs" class="tabs"></div>
+                    <div id="productGrid" class="product-grid"></div>
+                </section>
+
+                <aside class="cart-panel">
+                    <h2>Cart</h2>
+                    <div id="cartItems" class="cart-items"></div>
+                    <div class="cart-total">
+                        <span>Total</span>
+                        <strong id="cartTotal">$0.00</strong>
+                    </div>
+                    <button id="createOrderBtn">Place order</button>
+                    <button id="clearCartBtn" class="secondary">Clear cart</button>
+                </aside>
+            </div>
+        </section>
+
+        <section id="ordersView" class="view">
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">Orders</p>
+                    <h1>My orders</h1>
+                </div>
+            </div>
+            <div id="ordersList" class="list"></div>
+        </section>
+
+        <section id="adminView" class="view">
+            <div class="section-title">
+                <div>
+                    <p class="eyebrow">Cafe manager</p>
+                    <h1>Management</h1>
+                </div>
+                <a class="link-button" href="/h2-console" target="_blank" rel="noreferrer">H2 Console</a>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab active" data-admin-tab="products">Products</button>
+                <button class="admin-tab" data-admin-tab="categories">Categories</button>
+                <button class="admin-tab" data-admin-tab="orders">Orders</button>
+                <button class="admin-tab" data-admin-tab="users">Users</button>
+            </div>
+
+            <section id="adminProductsPanel" class="admin-panel active">
+                <div class="admin-layout">
+                    <form id="productForm" class="panel">
+                        <h2 id="productFormTitle">Add product</h2>
+                        <input id="productId" type="hidden">
+                        <label>Name</label>
+                        <input id="productName" type="text" required>
+                        <label>Description</label>
+                        <textarea id="productDescription"></textarea>
+                        <label>Price</label>
+                        <input id="productPrice" type="number" min="0" step="0.01" required>
+                        <label>Category</label>
+                        <select id="productCategory" required></select>
+                        <label class="check"><input id="productAvailable" type="checkbox" checked> Available</label>
+                        <div class="form-actions">
+                            <button type="submit">Save product</button>
+                            <button id="cancelProductEditBtn" type="button" class="secondary hidden">Cancel edit</button>
+                        </div>
+                    </form>
+
+                    <section class="panel">
+                        <h2>Product list</h2>
+                        <div id="productAdminList" class="list compact"></div>
+                    </section>
+                </div>
+            </section>
+
+            <section id="adminCategoriesPanel" class="admin-panel">
+                <div class="admin-layout">
+                    <form id="categoryForm" class="panel">
+                        <h2 id="categoryFormTitle">Add category</h2>
+                        <input id="categoryId" type="hidden">
+                        <label>Name</label>
+                        <input id="categoryName" type="text" required>
+                        <label>Description</label>
+                        <textarea id="categoryDescription"></textarea>
+                        <div class="form-actions">
+                            <button type="submit">Save category</button>
+                            <button id="cancelCategoryEditBtn" type="button" class="secondary hidden">Cancel edit</button>
+                        </div>
+                    </form>
+
+                    <section class="panel">
+                        <h2>Category list</h2>
+                        <div id="categoryList" class="list compact"></div>
+                    </section>
+                </div>
+            </section>
+
+            <section id="adminOrdersPanel" class="admin-panel">
+                <section class="panel">
+                    <h2>All orders</h2>
+                    <div id="adminOrdersList" class="list compact"></div>
+                </section>
+            </section>
+
+            <section id="adminUsersPanel" class="admin-panel">
+                <div class="admin-layout">
+                    <form id="userForm" class="panel">
+                        <h2 id="userFormTitle">Add user</h2>
+                        <input id="userId" type="hidden">
+                        <label>Full name</label>
+                        <input id="userFullName" type="text" required>
+                        <label>Email</label>
+                        <input id="userEmail" type="email" required>
+                        <label>Phone</label>
+                        <input id="userPhone" type="text" required>
+                        <label>Password</label>
+                        <input id="userPassword" type="password" placeholder="Required for new user">
+                        <label>Role</label>
+                        <select id="userRole">
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                        <div class="form-actions">
+                            <button type="submit">Save user</button>
+                            <button id="cancelUserEditBtn" type="button" class="secondary hidden">Cancel edit</button>
+                        </div>
+                    </form>
+
+                    <section class="panel">
+                        <h2>User list</h2>
+                        <div id="usersList" class="list compact"></div>
+                    </section>
+                </div>
+            </section>
+        </section>
+    </section>
+</main>
+
+<script src="/app.js"></script>
+</body>
+</html>

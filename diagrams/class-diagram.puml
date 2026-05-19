@@ -1,17 +1,21 @@
 @startuml
-title Cafe Ordering System - UML Class Diagram
+title Cafe Ordering System - Domain Class Diagram
 
 class User {
   - id: Long
   - fullName: String
   - email: String
   - phone: String
+  - password: String
+  - role: String
+  - orders: List<Order>
 }
 
 class Category {
   - id: Long
   - name: String
   - description: String
+  - products: List<Product>
 }
 
 class Product {
@@ -20,6 +24,7 @@ class Product {
   - description: String
   - price: double
   - available: boolean
+  - category: Category
 }
 
 class Order {
@@ -27,12 +32,16 @@ class Order {
   - createdAt: LocalDateTime
   - status: OrderStatus
   - totalPrice: double
+  - user: User
+  - items: List<OrderItem>
 }
 
 class OrderItem {
   - id: Long
   - quantity: int
   - price: double
+  - order: Order
+  - product: Product
 }
 
 class Payment {
@@ -41,6 +50,22 @@ class Payment {
   - paymentMethod: String
   - paymentDate: LocalDateTime
   - status: PaymentStatus
+  - order: Order
+}
+
+class LoginRequest {
+  - email: String
+  - password: String
+}
+
+class CreateOrderRequest {
+  - userId: Long
+  - items: List<OrderItemRequest>
+}
+
+class OrderItemRequest {
+  - productId: Long
+  - quantity: int
 }
 
 enum OrderStatus {
@@ -57,13 +82,14 @@ enum PaymentStatus {
   FAILED
 }
 
-User "1" -- "many" Order
-Category "1" -- "many" Product
-Order "1" -- "many" OrderItem
-Product "1" -- "many" OrderItem
-Order "1" -- "1" Payment
+User "1" -- "0..*" Order : places
+Category "1" -- "0..*" Product : contains
+Order "1" -- "0..*" OrderItem : contains
+Product "1" -- "0..*" OrderItem : selected
+Order "1" -- "0..1" Payment : has
 
 Order --> OrderStatus
 Payment --> PaymentStatus
+CreateOrderRequest "1" -- "1..*" OrderItemRequest
 
 @enduml

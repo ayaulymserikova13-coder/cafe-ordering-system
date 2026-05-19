@@ -3,7 +3,6 @@ package com.example.cafe.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 @Entity
@@ -26,7 +25,7 @@ public class Product {
     private double price;
 
     private boolean available = true;
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

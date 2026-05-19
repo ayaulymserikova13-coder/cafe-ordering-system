@@ -1,9 +1,24 @@
 @startuml
 title Cafe Ordering System - Architecture Diagram
 
-actor Client as "Client / Postman / Browser"
+actor Customer
+actor Admin
+actor "Postman / Browser" as Client
+
+rectangle "Static Frontend" {
+  [index.html]
+  [styles.css]
+  [app.js]
+}
+
+package "Security / Config" {
+  [SecurityConfig]
+  [RoleAuthorizationFilter]
+  [DataInitializer]
+}
 
 package "Controller Layer" {
+  [AuthController]
   [UserController]
   [CategoryController]
   [ProductController]
@@ -28,6 +43,11 @@ package "Repository Layer" {
   [PaymentRepository]
 }
 
+package "Exception Handling" {
+  [GlobalExceptionHandler]
+  [ResourceNotFoundException]
+}
+
 database "H2 Database" {
   [USERS]
   [CATEGORY]
@@ -37,23 +57,43 @@ database "H2 Database" {
   [PAYMENT]
 }
 
+Customer --> [index.html]
+Admin --> [index.html]
+[index.html] --> [app.js]
+[app.js] --> [AuthController] : register / login
+[app.js] --> [UserController] : admin users
+[app.js] --> [CategoryController] : categories CRUD
+[app.js] --> [ProductController] : products CRUD
+[app.js] --> [OrderController] : orders
+[app.js] --> [PaymentController] : payments
+
+Client --> [AuthController]
 Client --> [UserController]
 Client --> [CategoryController]
 Client --> [ProductController]
 Client --> [OrderController]
 Client --> [PaymentController]
 
+[RoleAuthorizationFilter] --> [UserRepository] : Basic auth + roles
+[SecurityConfig] --> [RoleAuthorizationFilter]
+
+[AuthController] --> [UserService]
 [UserController] --> [UserService]
 [CategoryController] --> [CategoryService]
 [ProductController] --> [ProductService]
 [OrderController] --> [OrderService]
 [PaymentController] --> [PaymentService]
+[PaymentController] --> [OrderService]
 
 [UserService] --> [UserRepository]
 [CategoryService] --> [CategoryRepository]
 [ProductService] --> [ProductRepository]
+[ProductService] --> [CategoryService]
 [OrderService] --> [OrderRepository]
+[OrderService] --> [UserService]
+[OrderService] --> [ProductService]
 [PaymentService] --> [PaymentRepository]
+[PaymentService] --> [OrderService]
 
 [UserRepository] --> [USERS]
 [CategoryRepository] --> [CATEGORY]
@@ -61,5 +101,10 @@ Client --> [PaymentController]
 [OrderRepository] --> [ORDERS]
 [OrderItemRepository] --> [ORDER_ITEM]
 [PaymentRepository] --> [PAYMENT]
+
+[DataInitializer] --> [UserRepository]
+[DataInitializer] --> [CategoryRepository]
+[DataInitializer] --> [ProductRepository]
+[GlobalExceptionHandler] --> [ResourceNotFoundException]
 
 @enduml

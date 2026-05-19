@@ -4,22 +4,24 @@ title Cafe Ordering System - ER Diagram
 entity USERS {
   * id : BIGINT <<PK>>
   --
-  full_name : VARCHAR
-  email : VARCHAR
-  phone : VARCHAR
+  full_name : VARCHAR NOT NULL
+  email : VARCHAR NOT NULL <<UNIQUE>>
+  phone : VARCHAR NOT NULL
+  password : VARCHAR
+  role : VARCHAR
 }
 
 entity CATEGORY {
   * id : BIGINT <<PK>>
   --
-  name : VARCHAR
+  name : VARCHAR NOT NULL <<UNIQUE>>
   description : VARCHAR
 }
 
 entity PRODUCT {
   * id : BIGINT <<PK>>
   --
-  name : VARCHAR
+  name : VARCHAR NOT NULL
   description : VARCHAR
   price : DOUBLE
   available : BOOLEAN
@@ -51,13 +53,13 @@ entity PAYMENT {
   payment_method : VARCHAR
   payment_date : TIMESTAMP
   status : VARCHAR
-  order_id : BIGINT <<FK>>
+  order_id : BIGINT <<FK, UNIQUE>>
 }
 
-USERS ||--o{ ORDERS
-CATEGORY ||--o{ PRODUCT
-ORDERS ||--o{ ORDER_ITEM
-PRODUCT ||--o{ ORDER_ITEM
-ORDERS ||--|| PAYMENT
+USERS ||--o{ ORDERS : places
+CATEGORY ||--o{ PRODUCT : contains
+ORDERS ||--o{ ORDER_ITEM : contains
+PRODUCT ||--o{ ORDER_ITEM : selected_in
+ORDERS ||--o| PAYMENT : has
 
 @enduml

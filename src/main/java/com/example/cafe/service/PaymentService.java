@@ -27,6 +27,11 @@ public class PaymentService {
     }
 
     public Payment create(Long orderId, String method) {
+        return paymentRepository.findByOrderId(orderId)
+                .orElseGet(() -> createNewPayment(orderId, method));
+    }
+
+    private Payment createNewPayment(Long orderId, String method) {
         Order order = orderService.getById(orderId);
 
         Payment payment = new Payment();

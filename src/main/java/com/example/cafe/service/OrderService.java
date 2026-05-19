@@ -8,6 +8,7 @@ import com.example.cafe.entity.Product;
 import com.example.cafe.entity.User;
 import com.example.cafe.enums.OrderStatus;
 import com.example.cafe.repository.OrderRepository;
+import com.example.cafe.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.example.cafe.exception.ResourceNotFoundException;
@@ -21,6 +22,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final ProductService productService;
+    private final PaymentRepository paymentRepository;
 
     public List<Order> getAll() {
         return orderRepository.findAll();
@@ -68,6 +70,8 @@ public class OrderService {
     }
 
     public void delete(Long id) {
-        orderRepository.delete(getById(id));
+        Order order = getById(id);
+        paymentRepository.findByOrderId(id).ifPresent(paymentRepository::delete);
+        orderRepository.delete(order);
     }
 }
